@@ -11,6 +11,11 @@ export class EditorComponent implements OnInit {
   quillModules = {};
   quillContent = '';
   htmlStr = '';
+  change = {
+    lastChange: '',
+    newChange: ''
+  };
+
 
   constructor() {
     this.quillModules = {
@@ -40,6 +45,13 @@ export class EditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let data = localStorage.getItem('storedText');
+    if(data) {
+      console.log('data ===> ', data);
+      this.quillContent = data;
+      this.update(JSON.parse(data), null);
+    }
+    setInterval(() => this.saveChanges(), 5*1000);
   }
 
   created($event: any) {
@@ -69,6 +81,16 @@ export class EditorComponent implements OnInit {
     console.log('onContentChanged', $event);
 
     this.update($event.content, $event.delta);
+    // change = change.compose(delta);
+    this.change.newChange = JSON.stringify($event.content);
+  }
+
+  saveChanges() {
+    if(this.change.lastChange !== this.change.newChange) {
+      console.log('Saving changes', this.change.newChange);
+      localStorage.setItem('storedText', this.change.newChange);
+      this.change.lastChange = this.change.newChange;
+    }
   }
 
   update(contents: any, delta: any) {
