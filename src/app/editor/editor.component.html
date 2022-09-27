@@ -1,0 +1,96 @@
+<div class="row mt-5">
+  <div class="col-md-8">
+
+    <quill-editor
+      [(ngModel)]="quillContent"
+      trackChanges="all"
+      [modules]="quillModules"
+      [styles]="{ height: '200px' }"
+      (onFocus)="focus($event)"
+      (onEditorChanged)="changedEditor($event)"
+      (onBlur)="blur($event)"
+      (onEditorCreated)="created($event)"
+
+      (onContentChanged)="onContentChanged($event)">
+    </quill-editor>
+
+    <!-- <quill-editor></quill-editor> -->
+
+    <!-- <quill-editor>
+      <div quill-editor-toolbar>
+        <span class="ql-formats">
+          <select class="ql-font">
+            <option selected></option>
+            <option value="serif"></option>
+            <option value="monospace"></option>
+          </select>
+          <select class="ql-size">
+            <option value="small"></option>
+            <option selected></option>
+            <option value="large"></option>
+            <option value="huge"></option>
+          </select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-underline"></button>
+          <button class="ql-strike"></button>
+        </span>
+        <span class="ql-formats">
+          <select class="ql-color"></select>
+          <select class="ql-background"></select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-list" value="ordered"></button>
+          <button class="ql-list" value="bullet"></button>
+          <select class="ql-align">
+            <option selected></option>
+            <option value="center"></option>
+            <option value="right"></option>
+            <option value="justify"></option>
+          </select>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-link"></button>
+          <button class="ql-image"></button>
+        </span>
+      </div>
+    </quill-editor> -->
+
+  </div>
+
+  <div class="col-md-4">
+    <div id="delta-container">
+      <pre>
+        <code [highlight]="htmlStr"></code>
+      </pre>
+    </div>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+
+    <div id="accordion mt-5">
+      <div class="card">
+        <div class="card-header" id="headingOne">
+          <h5 class="mb-0">
+            <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              OUTPUT
+            </button>
+          </h5>
+        </div>
+
+        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+          <div class="card-body">
+            <pre>
+              <code>{{ quillContent }}</code>
+            </pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
