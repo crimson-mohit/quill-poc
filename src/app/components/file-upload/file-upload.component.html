@@ -1,0 +1,7 @@
+<div class="text-center">
+  <input #fileUploader class="form-control" type="file" name="file" (change)="onChange($event)">
+</div>
+
+<div class="container" *ngIf="loading">
+  <h3>Loading ...</h3>
+</div>

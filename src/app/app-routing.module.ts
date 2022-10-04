@@ -1,11 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { EditorComponent } from "./editor/editor.component";
+import { DashboardComponent } from '@/components/dashboard/dashboard.component';
+import { EditorComponent } from '@/components/editor/editor.component';
 
 const routes: Routes = [
-  // { path: '', redirectTo: '', pathMatch: 'full' },
-  { path: '**', component: EditorComponent },
-  { path: 'dashboard', component: EditorComponent }
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'editor', component: EditorComponent },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '**', component: DashboardComponent }
 ];
 
 @NgModule({
