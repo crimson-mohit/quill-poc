@@ -1,8 +1,15 @@
 <div class="row mt-5">
+  <div class="col-md-5">
+    <app-file-upload></app-file-upload>
+  </div>
+</div>
+
+<div class="row mt-5">
   <div class="col-md-8">
 
     <quill-editor
       [(ngModel)]="quillContent"
+      (ngModelChange)="ediotrModelChangedEvent($event)"
       format="json"
       trackChanges="all"
       [modules]="quillModules"
@@ -11,7 +18,6 @@
       (onEditorChanged)="changedEditor($event)"
       (onBlur)="blur($event)"
       (onEditorCreated)="created($event)"
-
       (onContentChanged)="onContentChanged($event)">
     </quill-editor>
 
@@ -86,7 +92,7 @@
         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
           <div class="card-body">
             <pre>
-              <code>{{ quillContent }}</code>
+              <code [highlight]="getQuillContent() | json" [languages]="['json']"></code>
             </pre>
           </div>
         </div>
