@@ -111,7 +111,7 @@ export class EditorComponent implements OnInit {
       this._documentsService.updateDelta(this._currentDocumentId, this._currentDelta);
 
       console.log('delta changed', $event.delta)
-      this.htmlStr = 'change = ' + JSON.stringify($event.delta, null, 2);
+      this.htmlStr = JSON.stringify($event.delta, null, 2);
     }
   }
 
