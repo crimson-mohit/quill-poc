@@ -13,8 +13,9 @@ import { AppComponent } from '@/app.component';
 import { EditorComponent } from '@/components/editor/editor.component';
 import { FileUploadComponent } from '@/components/file-upload/file-upload.component';
 import { DashboardComponent } from '@/components/dashboard/dashboard.component';
+import { environment } from '../environments/environment';
 
-const config: SocketIoConfig = { url: 'http://localhost:8081', options: {} };
+const config: SocketIoConfig = { url: environment.apiURL, options: {} };
 
 @NgModule({
   declarations: [
