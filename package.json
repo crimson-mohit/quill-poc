@@ -43,5 +43,6 @@
     "karma-coverage": "~2.1.0",
     "karma-jasmine": "~4.0.0",
     "karma-jasmine-html-reporter": "~1.7.0"
-  }
+  },
+  "engine": { "node": "14.x", "npm": "6.x" }
 }
