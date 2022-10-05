@@ -1,9 +1,10 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill';
 import { Subscription, Subject, debounceTime } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 import { AppService } from '@/services/app.service';
-import { EditorService } from '@/services/editor.service';
+import { DocumentsService } from '@/services/documents.service';
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -11,14 +12,13 @@ import { EditorService } from '@/services/editor.service';
 })
 export class EditorComponent implements OnInit {
 
+  private _editorEvent: Subscription;
+  private _currentDocumentId: any = null;
+  private _currentDelta = null;
+  private _ediotrModelChanged = new Subject();
+
   quillContent = '';
   htmlStr = '';
-  _fileUploadedEvent: Subscription = new Subscription;
-
-  private editorEvent: Subscription;
-  private currentDocumentId: string = '';
-  private currentDelta = null;
-  private ediotrModelChanged = new Subject();
   quillModules: any = {
     'toolbar': [
       ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
@@ -43,27 +43,32 @@ export class EditorComponent implements OnInit {
     ]
   };
 
-  constructor(private appService: AppService, private editorService: EditorService) {
-    this.ediotrModelChanged
+  constructor(private _activatedRoute: ActivatedRoute, private _appService: AppService, private _documentsService: DocumentsService) {
+    this._ediotrModelChanged
     .pipe(debounceTime(1000))
     .subscribe((value) => {
-      console.log('ediotrModelChanged called ===> ', value);
+      console.log('_ediotrModelChanged called ===> ', value);
     });
 
-    this.editorEvent = this.editorService.currentEditor.subscribe(event => console.log(event));
+    this._editorEvent = this._documentsService.currentEditor.subscribe(event => console.log(event));
   }
 
   ngOnInit(): void {
-    this._fileUploadedEvent = this.appService.fileUploadedEvent.subscribe((data: any) => {
-      console.log(data.id, data.content);
-      // this.getFileContent();
-      this.currentDocumentId = data.id;
-      this.quillContent = data.content;
+    this._activatedRoute.paramMap.subscribe(params => {
+      this._currentDocumentId = params.get('id');
+      this.getDocumentById(this._currentDocumentId);
+    });
+  }
+
+  getDocumentById(documentId: any) {
+    this._documentsService.getDocumentByIdRequest({ id: documentId })
+    .subscribe((result: any) => {
+      this.quillContent = result.data;
     });
   }
 
   ngOnDestroy() {
-    this.editorEvent.unsubscribe();
+    this._editorEvent.unsubscribe();
   }
 
   getQuillContent() {
@@ -77,8 +82,7 @@ export class EditorComponent implements OnInit {
   }
 
   getFileContent() {
-    this.appService.getFileById('bW9oaXQuY3JpbXNvbmlAZ21haWwuY29t', '197d6ee2-5d1f-4bb4-ae7b-b48db07e6024').subscribe((result: any) => {
-      console.log('getFileById ===> ', result);
+    this._appService.getFileById('bW9oaXQuY3JpbXNvbmlAZ21haWwuY29t', '197d6ee2-5d1f-4bb4-ae7b-b48db07e6024').subscribe((result: any) => {
       this.quillContent = result.data.content;
     });
   }
@@ -103,18 +107,18 @@ export class EditorComponent implements OnInit {
     console.log('onContentChanged', $event);
 
     if ($event.delta) {
-      this.currentDelta = $event.delta;
-      this.editorService.updateDelta(this.currentDocumentId, this.currentDelta);
+      this._currentDelta = $event.delta;
+      this._documentsService.updateDelta(this._currentDocumentId, this._currentDelta);
 
-      console.log('change', $event.delta)
+      console.log('delta changed', $event.delta)
       this.htmlStr = 'change = ' + JSON.stringify($event.delta, null, 2);
     }
   }
 
   ediotrModelChangedEvent(value: any) {
-    console.log('ediotrModelChanged ===> ', value);
-    if(this.currentDelta) {
-      this.ediotrModelChanged.next(value);
+    console.log('_ediotrModelChanged ===> ', value);
+    if(this._currentDelta) {
+      this._ediotrModelChanged.next(value);
     }
   }
 

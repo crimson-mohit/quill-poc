@@ -1,2 +1,26 @@
-<p>dashboard works!</p>
 <a routerLink="/editor" routerLinkActive="active" ariaCurrentWhenActive="page">Open Editor</a>
+
+<div class="row mt-5">
+  <div class="col-md-5">
+    <app-file-upload></app-file-upload>
+  </div>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-8">
+    <div *ngIf="!documents.length">
+      <p>No documents uploaded yet !!!</p>
+    </div>
+    <ul class="list-group" *ngIf="documents.length">
+      <li
+      class="list-group-item"
+      *ngFor="let document of documents"
+      style="cursor: pointer;"
+      >
+      <a [routerLink]="['/editor', document]">
+        {{ document }}
+      </a>
+    </li>
+    </ul>
+  </div>
+</div>

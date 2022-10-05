@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AppService } from '@/services/app.service';
-import { FileUploadService } from '@/services/file-upload.service';
-
+import { DocumentsService } from '@/services/documents.service';
 
 @Component({
   selector: 'app-file-upload',
@@ -15,29 +14,23 @@ export class FileUploadComponent implements OnInit {
   loading: boolean = false;
   file!: File;
 
-  // Inject service
-  constructor(
-    private appService: AppService,
-    private fileUploadService: FileUploadService
-    ) { }
+  constructor(private _appService: AppService, private _documentsService: DocumentsService) { }
 
-    ngOnInit(): void { }
+  ngOnInit(): void { }
 
-    // On file Select
-    onChange(event: any) {
-      this.file = event.target.files[0];
-      this.loading = !this.loading;
-      this.fileUploadService.upload(this.file).subscribe({
-        next: (response: any) => {
-          console.log('response ===> ', response);
-          this.loading = false; // Flag variable
-          this.appService.fileUploaded({ id: response.id, content: response.content });
-          this.fileUploader.nativeElement.value = '';
-        },
-        error: (error: any) => {
-          this.loading = false; // Flag variable
-        },
-        complete: () => console.info('complete')
-      });
-    }
+  onChange(event: any) {
+    this.file = event.target.files[0];
+    this.loading = !this.loading;
+    this._documentsService.uploadDocument(this.file).subscribe({
+      next: (response: any) => {
+        this.loading = false;
+        this._appService.fileUploaded({ id: response.id });
+        this.fileUploader.nativeElement.value = '';
+      },
+      error: (error: any) => {
+        this.loading = false;
+      },
+      complete: () => console.info('complete')
+    });
   }
+}

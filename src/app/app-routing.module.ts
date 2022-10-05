@@ -5,7 +5,7 @@ import { EditorComponent } from '@/components/editor/editor.component';
 
 const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
-  { path: 'editor', component: EditorComponent },
+  { path: 'editor/:id', component: EditorComponent },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
   { path: '**', component: DashboardComponent }
 ];

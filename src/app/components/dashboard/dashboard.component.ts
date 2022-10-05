@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription, Subject, debounceTime } from 'rxjs';
+
+import { AppService } from '@/services/app.service';
+import { DocumentsService } from '@/services/documents.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -6,10 +10,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  _fileUploadedEvent: Subscription = new Subscription;
+  documents: any[] = [];
 
-  constructor() { }
+  constructor(private _appService: AppService, private _documentsService: DocumentsService) { }
 
   ngOnInit(): void {
+    this._fileUploadedEvent = this._appService.fileUploadedEvent.subscribe((data: any) => {
+      this.documents.push(data.id);
+    });
+
+    this.getListOfDocuments();
+  }
+
+  getListOfDocuments() {
+    this._documentsService.getListOfDocumentsRequest().subscribe((result: any) => {
+      this.documents = result.data;
+    });
   }
 
 }
