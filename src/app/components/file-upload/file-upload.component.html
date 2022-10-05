@@ -1,5 +1,12 @@
 <div class="text-center">
-  <input #fileUploader class="form-control" type="file" name="file" (change)="onChange($event)">
+  <input
+  #fileUploader
+  class="form-control"
+  type="file"
+  name="file"
+  accept=".txt,.doc,.docx"
+  (change)="onChange($event)"
+  />
 </div>
 
 <div class="container" *ngIf="loading">
