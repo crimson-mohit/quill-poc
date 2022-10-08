@@ -2,6 +2,11 @@
   <div class="col-md-5">
     <app-file-upload></app-file-upload>
   </div>
+  <div class="col-md-5">
+    <button class="btn btn-success">
+      <a [routerLink]="['/editor', '']" style="color: #FFFFFF; text-decoration: none;">New File</a>
+    </button>
+  </div>
 </div>
 
 <div class="row mt-5">
@@ -10,15 +15,10 @@
       <p>No documents uploaded yet !!!</p>
     </div>
     <ul class="list-group" *ngIf="documents.length">
-      <li
-      class="list-group-item"
-      *ngFor="let document of documents"
-      style="cursor: pointer;"
-      >
-      <a [routerLink]="['/editor', document]">
-        {{ document }}
-      </a>
-    </li>
+      <li class="list-group-item" *ngFor="let document of documents" style="cursor: pointer;">
+        <a [routerLink]="['/editor', document]">{{ document }}</a>
+        <span style="float: right;" (click)="deleteDocument(document)">X</span>
+      </li>
     </ul>
   </div>
 </div>

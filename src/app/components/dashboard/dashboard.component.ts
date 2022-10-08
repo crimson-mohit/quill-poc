@@ -24,8 +24,17 @@ export class DashboardComponent implements OnInit {
   }
 
   getListOfDocuments() {
-    this._documentsService.getListOfDocumentsRequest().subscribe((result: any) => {
-      this.documents = result.data;
+    this._documentsService.getListOfDocumentsRequest().subscribe((response: any) => {
+      this.documents = response.data;
+    });
+  }
+
+  deleteDocument(documentId: string) {
+    this._documentsService.deleteDocumentRequest({ id: documentId }).subscribe((response: any) => {
+      console.log(response);
+      if(response.status) {
+        this.getListOfDocuments();
+      }
     });
   }
 

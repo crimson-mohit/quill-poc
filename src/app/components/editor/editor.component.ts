@@ -16,6 +16,7 @@ export class EditorComponent implements OnInit {
   private _currentDocumentId: any = null;
   private _currentDelta = null;
   private _ediotrModelChanged = new Subject();
+  private firstLoad = true;
 
   quillContent = '';
   htmlStr = '';
@@ -56,7 +57,6 @@ export class EditorComponent implements OnInit {
   ngOnInit(): void {
     this._activatedRoute.paramMap.subscribe(params => {
       this._currentDocumentId = params.get('id');
-      this.getDocumentById(this._currentDocumentId);
     });
   }
 
@@ -88,7 +88,8 @@ export class EditorComponent implements OnInit {
   }
 
   created($event: any) {
-    console.log('editor-created', $event)
+    console.log('editor-created', $event);
+    this.getDocumentById(this._currentDocumentId);
   }
 
   changedEditor($event: EditorChangeContent | EditorChangeSelection) {
@@ -106,13 +107,15 @@ export class EditorComponent implements OnInit {
   onContentChanged($event: any) {
     console.log('onContentChanged', $event);
 
-    if ($event.delta) {
+    if ($event.delta && !this.firstLoad) {
       this._currentDelta = $event.delta;
       this._documentsService.updateDelta(this._currentDocumentId, this._currentDelta);
 
       console.log('delta changed', $event.delta)
       this.htmlStr = JSON.stringify($event.delta, null, 2);
     }
+
+    if(this.firstLoad) this.firstLoad = false;
   }
 
   ediotrModelChangedEvent(value: any) {

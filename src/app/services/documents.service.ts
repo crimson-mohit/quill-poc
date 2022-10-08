@@ -26,7 +26,12 @@ export class DocumentsService {
     return this._http.post(`${environment.apiURL}/documents/upload`, formData)
   }
 
+  deleteDocumentRequest(documentId: any) {
+    return this._http.post(`${environment.apiURL}/documents/deleteById`, documentId);
+  }
+
   updateDelta(id: string, delta: any) {
     this._socket.emit('document:write', { id, delta });
   }
+
 }
