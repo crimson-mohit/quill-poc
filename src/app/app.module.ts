@@ -13,7 +13,8 @@ import { AppComponent } from '@/app.component';
 import { EditorComponent } from '@/components/editor/editor.component';
 import { FileUploadComponent } from '@/components/file-upload/file-upload.component';
 import { DashboardComponent } from '@/components/dashboard/dashboard.component';
-import { environment } from '../environments/environment';
+import { environment } from '@/../environments/environment';
+import { LoaderComponent } from '@/components/loader/loader.component';
 
 const config: SocketIoConfig = { url: environment.apiURL, options: {} };
 
@@ -22,7 +23,8 @@ const config: SocketIoConfig = { url: environment.apiURL, options: {} };
     AppComponent,
     EditorComponent,
     FileUploadComponent,
-    DashboardComponent
+    DashboardComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,

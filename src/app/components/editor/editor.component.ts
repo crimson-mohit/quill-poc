@@ -1,10 +1,12 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
+import { Location } from '@angular/common';
 import { EditorChangeContent, EditorChangeSelection } from 'ngx-quill';
 import { Subscription, Subject, debounceTime } from 'rxjs';
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { AppService } from '@/services/app.service';
 import { DocumentsService } from '@/services/documents.service';
+import { LoaderService } from "@/services/loader.service";
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -16,7 +18,7 @@ export class EditorComponent implements OnInit {
   private _currentDocumentId: any = null;
   private _currentDelta = null;
   private _ediotrModelChanged = new Subject();
-  private firstLoad = true;
+  private _firstLoad = true;
 
   quillContent = '';
   htmlStr = '';
@@ -44,7 +46,13 @@ export class EditorComponent implements OnInit {
     ]
   };
 
-  constructor(private _activatedRoute: ActivatedRoute, private _appService: AppService, private _documentsService: DocumentsService) {
+  constructor(
+    private _activatedRoute: ActivatedRoute,
+    private _appService: AppService,
+    private _documentsService: DocumentsService,
+    private _loaderService: LoaderService,
+    private _location: Location,
+    private _router: Router) {
     this._ediotrModelChanged
     .pipe(debounceTime(1000))
     .subscribe((value) => {
@@ -62,8 +70,8 @@ export class EditorComponent implements OnInit {
 
   getDocumentById(documentId: any) {
     this._documentsService.getDocumentByIdRequest({ id: documentId })
-    .subscribe((result: any) => {
-      this.quillContent = result.data;
+    .subscribe((response: any) => {
+      this.quillContent = response.data;
     });
   }
 
@@ -82,14 +90,26 @@ export class EditorComponent implements OnInit {
   }
 
   getFileContent() {
-    this._appService.getFileById('bW9oaXQuY3JpbXNvbmlAZ21haWwuY29t', '197d6ee2-5d1f-4bb4-ae7b-b48db07e6024').subscribe((result: any) => {
-      this.quillContent = result.data.content;
+    this._appService.getFileById('bW9oaXQuY3JpbXNvbmlAZ21haWwuY29t', '197d6ee2-5d1f-4bb4-ae7b-b48db07e6024').subscribe((response: any) => {
+      this.quillContent = response.data.content;
     });
   }
 
   created($event: any) {
     console.log('editor-created', $event);
-    this.getDocumentById(this._currentDocumentId);
+    if(!this._currentDocumentId) {
+      this._firstLoad = false;
+      this._loaderService.show();
+      this._documentsService.createNewDocumentRequest()
+      .subscribe((response: any) => {
+        this._currentDocumentId = response.id;
+
+        this._location.go(`/editor/${this._currentDocumentId}`)
+        this._loaderService.hide();
+      });
+    } else {
+      this.getDocumentById(this._currentDocumentId);
+    }
   }
 
   changedEditor($event: EditorChangeContent | EditorChangeSelection) {
@@ -107,7 +127,7 @@ export class EditorComponent implements OnInit {
   onContentChanged($event: any) {
     console.log('onContentChanged', $event);
 
-    if ($event.delta && !this.firstLoad) {
+    if ($event.delta && !this._firstLoad) {
       this._currentDelta = $event.delta;
       this._documentsService.updateDelta(this._currentDocumentId, this._currentDelta);
 
@@ -115,11 +135,12 @@ export class EditorComponent implements OnInit {
       this.htmlStr = JSON.stringify($event.delta, null, 2);
     }
 
-    if(this.firstLoad) this.firstLoad = false;
+    if(this._firstLoad) {
+      this._firstLoad = false;
+    }
   }
 
   ediotrModelChangedEvent(value: any) {
-    console.log('_ediotrModelChanged ===> ', value);
     if(this._currentDelta) {
       this._ediotrModelChanged.next(value);
     }

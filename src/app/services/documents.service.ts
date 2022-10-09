@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '@/../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,10 @@ export class DocumentsService {
 
   getListOfDocumentsRequest() {
     return this._http.get(`${environment.apiURL}/documents`);
+  }
+
+  createNewDocumentRequest() {
+    return this._http.get(`${environment.apiURL}/documents/createNewDocument`);
   }
 
   getDocumentByIdRequest(documentId: any) {

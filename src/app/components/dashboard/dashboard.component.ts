@@ -31,7 +31,6 @@ export class DashboardComponent implements OnInit {
 
   deleteDocument(documentId: string) {
     this._documentsService.deleteDocumentRequest({ id: documentId }).subscribe((response: any) => {
-      console.log(response);
       if(response.status) {
         this.getListOfDocuments();
       }
